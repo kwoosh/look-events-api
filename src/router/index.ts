@@ -1,20 +1,27 @@
 import * as Router from 'koa-router'
-import { getEvents } from '../scraper/events'
-import { Tags } from '../scraper/uri-builder'
+import { getAllEvents } from '../scraper/events'
+import { topics, cities } from '../scraper/utils'
 
-const router = new Router()
-const v1 = router.prefix('/v1')
+const router = new Router({ prefix: '/api/v1' })
 
-v1.get('/events', async ctx => {
-    const tags: Tags = {}
+router.get('/events', async ctx => {
+    const events = await getAllEvents({
+        city: ctx.query.city,
+        tag: ctx.query.tag,
+    })
 
-    if (ctx.query.city) tags.city = ctx.query.city
-    if (ctx.query.tag) tags.tag = ctx.query.tag
-
-    const events = await getEvents(tags)
-
-    ctx.response.set({ 'Content-Type': 'application/json' })
     ctx.body = events
+    ctx.response.set({ 'Content-Type': 'application/json' })
+})
+
+router.get('/topics', async ctx => {
+    ctx.body = topics
+    ctx.response.set({ 'Content-Type': 'application/json' })
+})
+
+router.get('/cities', async ctx => {
+    ctx.body = cities
+    ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 export default router
