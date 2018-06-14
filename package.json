@@ -12,12 +12,12 @@
     "watch-server": "nodemon --watch 'src/**/*' -e ts--exec 'ts-node' ./src/server.ts"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.0",
-    "koa-router": "^7.4.0",
-    "request": "^2.87.0"
+    "koa-router": "^7.4.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.7",
@@ -25,7 +25,6 @@
     "@types/koa-bodyparser": "^4.2.0",
     "@types/koa-logger": "^3.1.0",
     "@types/koa-router": "^7.0.28",
-    "@types/request": "^2.47.0",
     "jest": "^23.1.0",
     "nodemon": "^1.17.5",
     "ts-node": "^6.1.0",
