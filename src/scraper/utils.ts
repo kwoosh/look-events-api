@@ -85,19 +85,21 @@ export const topics = [
 export function writeTags2File(): void {
     getPage()
         .then(page => {
-            const cities = page(selectors.cities)
-                .map((i, el) => el.children[0].data)
-                .get()
-                .map(str => {
-                    if (str === 'онлайн') str = 'online'
-                    return str
-                })
+            if (page) {
+                const cities = page(selectors.cities)
+                    .map((i, el) => el.children[0].data)
+                    .get()
+                    .map(str => {
+                        if (str === 'онлайн') str = 'online'
+                        return str
+                    })
 
-            const topics = page(selectors.topics)
-                .map((i, el) => el.children[0].data)
-                .get()
+                const topics = page(selectors.topics)
+                    .map((i, el) => el.children[0].data)
+                    .get()
 
-            return { topics, cities }
+                return { topics, cities }
+            }
         })
         .then(data => {
             fs.writeFileSync(path.join(__dirname, '/tags.json'), JSON.stringify(data))
