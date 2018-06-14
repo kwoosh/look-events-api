@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio'
 import axios from 'axios'
 
-import { selectors, cities } from './selectors'
+import { selectors, cities } from './utils'
 import { buildURI, Tags } from './uri-builder'
 
 export function getPage(tags?: Tags): Promise<CheerioStatic> {
