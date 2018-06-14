@@ -1,7 +1,6 @@
 import * as Koa from 'koa'
-import * as logger from 'koa-logger'
 import * as bodyParser from 'koa-bodyparser'
-
+import * as logger from 'koa-logger'
 import router from './router'
 
 const app = new Koa()
