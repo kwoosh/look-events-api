@@ -9,6 +9,6 @@ app.use(logger())
 app.use(bodyParser())
 app.use(router.routes())
 
-app.listen(3000)
+app.listen(process.env.PORT || 3000)
 
 console.log('Server running on port http://localhost:3000')
