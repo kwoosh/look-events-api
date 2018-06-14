@@ -15,6 +15,7 @@ description
     - `fix` - bug fixes.
     - `feat` - features.
     - `test` - changes to tests infrastructure.
+    - `refactor` - code refactoring, styling, formatting etc.
     - `chore` - non-production changes.
     - `docs` - changes to docs.
 2. *namespace* is put in parenthesis after label and is optional.
