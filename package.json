@@ -1,5 +1,5 @@
 {
-  "name": "look-events",
+  "name": "look-events-api",
   "version": "0.1.0",
   "description": "IT events API powered by DOU.ua",
   "license": "MIT",
@@ -8,8 +8,7 @@
     "start": "ts-node src/server.ts",
     "dev": "nodemon",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "watch-server": "nodemon --watch 'src/**/*' -e ts--exec 'ts-node' ./src/server.ts"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "axios": "^0.18.0",
