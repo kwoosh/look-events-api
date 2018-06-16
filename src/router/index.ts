@@ -4,6 +4,16 @@ import { tags } from '../parser/utils'
 
 const router = new Router()
 
+router.get('/', async ctx => {
+    ctx.body = {
+        Author: 'Andrew Pashinnik',
+        Contact: 'tobirawork@gmail.com',
+        Home: 'https://look-events-api.herokuapp.com/',
+        GitHub: 'https://github.com/kwoosh/look-events-api/',
+        Docs: 'https://github.com/kwoosh/look-events-api/',
+    }
+})
+
 router.get('/events', async ctx => {
     const events = await getAllEvents({
         city: ctx.query.city,
