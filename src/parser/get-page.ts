@@ -1,0 +1,10 @@
+import * as cheerio from 'cheerio'
+import axios, { AxiosError } from 'axios'
+import { buildURI, Tags } from './uri-builder'
+
+export function getPage(tags?: Tags): Promise<CheerioStatic | void> {
+    return axios
+        .get(buildURI(tags))
+        .then(res => cheerio.load(res.data))
+        .catch((err: AxiosError) => console.error(err))
+}
