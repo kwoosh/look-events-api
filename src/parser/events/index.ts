@@ -17,9 +17,11 @@ export function getEventsForPage(tags?: Tags): Promise<Event[]> {
 export async function getAllEvents(tags?: Tags): Promise<Event[]> {
     const totalEvents: Event[] = []
 
-    for (let i = 1; i < 50; i++) {
-        const eventsFromPage = await getEventsForPage({ ...tags, page: i })
+    for (let page = 1; page < 50; page++) {
+        const eventsFromPage = await getEventsForPage({ ...tags, page })
+
         if (!eventsFromPage.length) break
+
         totalEvents.push(...eventsFromPage)
     }
 
