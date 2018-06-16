@@ -1,6 +1,6 @@
 import * as Router from 'koa-router'
-import { getAllEvents } from '../scraper/events'
-import { tags } from '../scraper/utils'
+import { getAllEvents } from '../parser/events'
+import { tags } from '../parser/utils'
 
 const router = new Router()
 
