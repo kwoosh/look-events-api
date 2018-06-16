@@ -1,32 +1,13 @@
-import { getPage } from './events'
+import { getPage } from './get-page'
 
-export const mainRoot =
-    'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
+export const parseDateRegExp = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
+
+export const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
 
 export const selectors = {
     events: `${mainRoot} > article.b-postcard`,
     cities: `${mainRoot} > div.page-head > h1 > select:nth-child(2) > option`,
     topics: `${mainRoot} > div.page-head > h1 > select:nth-child(3) > option`,
-}
-
-export function getTags() {
-    return getPage({ fromArchive: true }).then(page => {
-        if (page) {
-            const cities = page(selectors.cities)
-                .map((i, el) => el.children[0].data)
-                .get()
-                .map(str => {
-                    if (str === 'онлайн') str = 'online'
-                    return str
-                })
-
-            const topics = page(selectors.topics)
-                .map((i, el) => el.children[0].data)
-                .get()
-
-            return { topics, cities }
-        }
-    })
 }
 
 export const tags = {
@@ -207,4 +188,24 @@ export const tags = {
         'Шацк',
         'online',
     ],
+}
+
+export function getTags() {
+    return getPage({ fromArchive: true }).then(page => {
+        if (page) {
+            const cities = page(selectors.cities)
+                .map((i, el) => el.children[0].data)
+                .get()
+                .map(str => {
+                    if (str === 'онлайн') str = 'online'
+                    return str
+                })
+
+            const topics = page(selectors.topics)
+                .map((i, el) => el.children[0].data)
+                .get()
+
+            return { topics, cities }
+        }
+    })
 }
