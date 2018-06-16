@@ -1,7 +1,19 @@
 import axios, { AxiosError } from 'axios'
 import * as cheerio from 'cheerio'
 import { buildURI, Tags } from './uri-builder'
-import { cities, selectors } from './utils'
+import { selectors, tags } from './utils'
+
+const cities: string[] = tags.cities
+
+export type Event = {
+    id: number
+    title: string
+    description: string
+    time: string
+    place: string
+    price: string
+    topics: string[]
+}
 
 export function getPage(tags?: Tags): Promise<CheerioStatic | void> {
     return axios
@@ -60,10 +72,7 @@ export function getEventsForPage(tags?: Tags): Promise<Event[]> {
                     .children('div.when-and-where')
                     .text()
                     .match(/[a-zA-Zа-яА-Я]+/g)
-                    .find(str => {
-                        if (str === 'Online') str = str.toLowerCase()
-                        return cities.includes(str)
-                    })
+                    .find(str => cities.map(city => city.toLowerCase()).includes(str.toLowerCase()))
 
                 events.push({ id, title, time, price, place, description, topics })
             })
@@ -83,14 +92,4 @@ export async function getAllEvents(tags?: Tags): Promise<Event[]> {
     }
 
     return totalEvents
-}
-
-export type Event = {
-    id: number
-    title: string
-    description: string
-    time: string
-    place: string
-    price: string
-    topics: string[]
 }
