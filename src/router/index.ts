@@ -6,6 +6,7 @@ const router = new Router()
 
 router.get('/', async ctx => {
     ctx.body = {
+        Version: '0.4.0',
         Author: 'Andrew Pashinnik',
         Contact: 'tobirawork@gmail.com',
         Home: 'https://look-events-api.herokuapp.com/',
