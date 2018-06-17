@@ -1,7 +1,17 @@
 # Look events
 IT events API powered by DOU.ua
 
-## Commit Messages
+## API
+
+Source: `https://look-events-api.herokuapp.com`
+
+Endpoints:
+- Meta info - `/`
+- Event - `/events`
+- Cities - `/tags/cities`
+- Topics - `/tags/topics`
+
+### Commit Messages
 
 Commit messages should follow the Semantic Commit Messages format:
 
