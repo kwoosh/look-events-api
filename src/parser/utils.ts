@@ -1,4 +1,4 @@
-import { getPage } from './get-page'
+import { loadPage } from './load-page'
 
 export const parseDateRegExp = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
 
@@ -191,7 +191,7 @@ export const tags = {
 }
 
 export function getTags() {
-    return getPage({ fromArchive: true }).then(page => {
+    return loadPage({ fromArchive: true }).then(page => {
         if (page) {
             const cities = page(selectors.cities)
                 .map((i, el) => el.children[0].data)

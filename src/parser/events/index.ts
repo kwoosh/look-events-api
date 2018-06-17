@@ -1,11 +1,11 @@
 import * as cheerio from 'cheerio'
 import { Tags } from '../uri-builder'
 import { selectors } from '../utils'
-import { getPage } from '../get-page'
+import { loadPage } from '../load-page'
 import { Event, formatEvent } from './event'
 
 export function getEventsForPage(tags?: Tags): Promise<Event[]> {
-    return getPage(tags).then(page => {
+    return loadPage(tags).then(page => {
         const events: Event[] = []
 
         if (page) page(selectors.events).map((i, element) => events.push(formatEvent(cheerio(element))))
