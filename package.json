@@ -6,11 +6,11 @@
   "author": "Andrew Pashinnik <tobirawork@gmail.com>",
   "repository": "https://github.com/kwoosh/look-events-api",
   "scripts": {
-    "start": "ts-node src/server.ts",
-    "dist": "tsc",
     "dev": "nodemon",
+    "start": "ts-node src/server.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "dist": "tsc",
+    "deploy": "npm run test && git push heroku master"
   },
   "engines": {
     "node": "9.9.0"
