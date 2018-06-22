@@ -1,37 +1,43 @@
 import * as Router from 'koa-router'
-import { getAllEvents } from '../parser/events'
-import { tags } from '../parser/utils'
+import { defaultTags } from '../parser/utils'
+import DB, { Tags } from '../db'
 
 const router = new Router()
+const eventsDB = new DB()
+
+setInterval(() => eventsDB.fill(), 1000 * 60 * 60) // refill Events DB every hour
 
 router.get('/', async ctx => {
     ctx.body = {
-        Version: '0.4.0',
+        Version: '0.5.0',
         Author: 'Andrew Pashinnik',
         Contact: 'tobirawork@gmail.com',
         Home: 'https://look-events-api.herokuapp.com/',
         GitHub: 'https://github.com/kwoosh/look-events-api/',
-        Docs: 'https://github.com/kwoosh/look-events-api/',
     }
 })
 
 router.get('/events', async ctx => {
-    const events = await getAllEvents({
-        city: ctx.query.city,
-        tag: ctx.query.tag,
-    })
+    const tags: Tags = typeof ctx.query.tags === 'string' ? JSON.parse(ctx.query.tags) : ctx.query.tags
 
-    ctx.body = events
+    ctx.body = eventsDB.getList(tags)
+    ctx.response.set({ 'Content-Type': 'application/json' })
+})
+
+router.get('/event/:id', async ctx => {
+    const event = eventsDB.get(ctx.params.id)
+
+    ctx.body = event
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/tag/topics', async ctx => {
-    ctx.body = tags.topics
+    ctx.body = defaultTags.topics
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
-router.get('/tag/cities', async ctx => {
-    ctx.body = tags.cities
+router.get('/tag/places', async ctx => {
+    ctx.body = defaultTags.places
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
