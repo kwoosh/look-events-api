@@ -13,7 +13,7 @@ export default class DB {
         const events: Event[] = []
 
         this.db = low(new FileSync(path.join(__dirname, '/db.json')))
-        this.db.defaults({ events })
+        this.db.defaults({ events }).write()
 
         if (process.env.NODE_ENV !== 'development') this.fill()
     }
