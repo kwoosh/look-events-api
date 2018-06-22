@@ -14,17 +14,23 @@ export default class DB {
 
         this.db = low(new FileSync(path.join(__dirname, '/db.json')))
         this.db.defaults({ events })
+
+        if (process.env.NODE_ENV !== 'development') this.fill()
     }
 
     async fill() {
-        const events = await getAllEvents()
+        console.log(`Start fillig Database`)
 
+        const events = await getAllEvents()
         for (let event of events) {
-            const src = await getEventPictureSrc(event.id)
-            event.image = src
+            event.image = await getEventPictureSrc(event.id).catch(err => {
+                console.error(err)
+                return ''
+            })
         }
 
         this.db.set('events', events).write()
+
         console.log(`Database successfuly filed with ${events.length} elements`)
     }
 
