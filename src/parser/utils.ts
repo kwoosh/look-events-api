@@ -8,6 +8,8 @@ export const selectors = {
     events: `${mainRoot} > article.b-postcard`,
     cities: `${mainRoot} > div.page-head > h1 > select:nth-child(2) > option`,
     topics: `${mainRoot} > div.page-head > h1 > select:nth-child(3) > option`,
+    singleEventPicture:
+        'body > div.g-page > div.l-content.m-content > div.l-content-wrap > div.cell.g-right-shadowed.mobtab-maincol > div.event-info > img',
 }
 
 export const tags = {
