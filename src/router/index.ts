@@ -9,12 +9,11 @@ setInterval(() => eventsDB.fill(), 1000 * 60 * 60) // refill Events DB every hou
 
 router.get('/', async ctx => {
     ctx.body = {
-        Version: '0.4.0',
+        Version: '0.5.0',
         Author: 'Andrew Pashinnik',
         Contact: 'tobirawork@gmail.com',
         Home: 'https://look-events-api.herokuapp.com/',
         GitHub: 'https://github.com/kwoosh/look-events-api/',
-        Docs: 'https://github.com/kwoosh/look-events-api/',
     }
 })
 
