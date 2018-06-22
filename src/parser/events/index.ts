@@ -6,9 +6,7 @@ import { Event, formatEvent } from './event'
 
 export function getEventPictureSrc(id: number) {
     return loadPage({ id }).then(page => {
-        if (page) {
-            return page(selectors.singleEventPicture).attr('src')
-        }
+        if (page) return page(selectors.singleEventPicture).attr('src')
     })
 }
 
@@ -16,16 +14,10 @@ export function getEventsForPage(tags?: Tags): Promise<Event[]> {
     return loadPage(tags).then(async page => {
         const events: Event[] = []
 
-        if (page) {
+        if (page)
             page(selectors.events).map((_, element) => {
                 events.push(formatEvent(cheerio(element)))
             })
-
-            for (let event of events) {
-                const src = await getEventPictureSrc(event.id)
-                event.image = src
-            }
-        }
 
         return events
     })

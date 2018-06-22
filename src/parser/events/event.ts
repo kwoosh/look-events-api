@@ -1,10 +1,12 @@
 import * as filters from './filters'
+import { buildURI } from '../uri-builder'
 
 export type Event = {
     id: number
     title: string
     description: string
     image?: string
+    uri: string
     place: string
     price: string
     time: string[]
@@ -19,4 +21,5 @@ export const formatEvent = (rawElem: Cheerio): Event => ({
     description: filters.description(rawElem),
     time: filters.time(rawElem),
     topics: filters.topics(rawElem),
+    uri: buildURI({ id: filters.id(rawElem) }),
 })
