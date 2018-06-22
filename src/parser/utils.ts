@@ -12,7 +12,7 @@ export const selectors = {
         'body > div.g-page > div.l-content.m-content > div.l-content-wrap > div.cell.g-right-shadowed.mobtab-maincol > div.event-info > img',
 }
 
-export const tags = {
+export const defaultTags = {
     topics: [
         '.NET',
         '1C',
@@ -95,7 +95,7 @@ export const tags = {
         'фриланс',
         'хакатон',
     ],
-    cities: [
+    places: [
         'Алушта',
         'Амстердам',
         'Анахейм',
@@ -195,7 +195,7 @@ export const tags = {
 export function getTags() {
     return loadPage({ fromArchive: true }).then(page => {
         if (page) {
-            const cities = page(selectors.cities)
+            const places = page(selectors.cities)
                 .map((i, el) => el.children[0].data)
                 .get()
                 .map(str => {
@@ -207,7 +207,7 @@ export function getTags() {
                 .map((i, el) => el.children[0].data)
                 .get()
 
-            return { topics, cities }
+            return { topics, places }
         }
     })
 }

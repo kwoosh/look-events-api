@@ -1,4 +1,4 @@
-export type Tags = {
+export type Params = {
     id?: number
     city?: string
     tag?: string
@@ -6,7 +6,7 @@ export type Tags = {
     fromArchive?: boolean
 }
 
-export const buildURI = ({ city, tag, page, fromArchive, id }: Tags = { fromArchive: false }): string => {
+export const buildURI = ({ city, tag, page, fromArchive, id }: Params = { fromArchive: false }): string => {
     let url = fromArchive ? 'archive/' : ''
 
     if (city && !tag) url += `city/${city}/`
