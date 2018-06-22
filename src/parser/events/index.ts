@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { Tags } from '../uri-builder'
+import { Params } from '../uri-builder'
 import { selectors } from '../utils'
 import { loadPage } from '../load-page'
 import { Event, formatEvent } from './event'
@@ -10,8 +10,8 @@ export function getEventPictureSrc(id: number) {
     })
 }
 
-export function getEventsForPage(tags?: Tags): Promise<Event[]> {
-    return loadPage(tags).then(async page => {
+export function getEventsForPage(params?: Params): Promise<Event[]> {
+    return loadPage(params).then(async page => {
         const events: Event[] = []
 
         if (page)
@@ -23,11 +23,11 @@ export function getEventsForPage(tags?: Tags): Promise<Event[]> {
     })
 }
 
-export async function getAllEvents(tags?: Tags): Promise<Event[]> {
+export async function getAllEvents(params?: Params): Promise<Event[]> {
     const totalEvents: Event[] = []
 
     for (let page = 1; page < 50; page++) {
-        const eventsFromPage = await getEventsForPage({ ...tags, page })
+        const eventsFromPage = await getEventsForPage({ ...params, page })
         if (!eventsFromPage.length) break
 
         totalEvents.push(...eventsFromPage)

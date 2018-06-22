@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 import * as moment from 'moment'
-import { tags, parseDateRegExp } from '../utils'
+import { defaultTags, parseDateRegExp } from '../utils'
 
 export function id(elem: Cheerio): number {
     return Number(
@@ -49,7 +49,7 @@ export function place(elem: Cheerio): string {
         .children('div.when-and-where')
         .text()
         .match(/[a-zA-Zа-яА-Я]+/g)
-        .find(str => tags.cities.map(city => city.toLowerCase()).includes(str.toLowerCase()))
+        .find(str => defaultTags.places.map(place => place.toLowerCase()).includes(str.toLowerCase()))
 }
 
 export function time(elem: Cheerio): string[] {
