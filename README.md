@@ -13,6 +13,13 @@ Endpoints:
 -   Cities - `/tags/cities`
 -   Topics - `/tags/topics`
 
+## Contibution
+
+NPM Scripts:
+
+-   `dev` : Starting server for development
+-   `test` : Run all tests
+
 ### Commit Messages
 
 Commit messages should follow the Semantic Commit Messages format:
