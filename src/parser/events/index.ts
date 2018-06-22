@@ -4,11 +4,28 @@ import { selectors } from '../utils'
 import { loadPage } from '../load-page'
 import { Event, formatEvent } from './event'
 
+export function getEventPictureSrc(id: number) {
+    return loadPage({ id }).then(page => {
+        if (page) {
+            return page(selectors.singleEventPicture).attr('src')
+        }
+    })
+}
+
 export function getEventsForPage(tags?: Tags): Promise<Event[]> {
-    return loadPage(tags).then(page => {
+    return loadPage(tags).then(async page => {
         const events: Event[] = []
 
-        if (page) page(selectors.events).map((i, element) => events.push(formatEvent(cheerio(element))))
+        if (page) {
+            page(selectors.events).map((_, element) => {
+                events.push(formatEvent(cheerio(element)))
+            })
+
+            for (let event of events) {
+                const src = await getEventPictureSrc(event.id)
+                event.image = src
+            }
+        }
 
         return events
     })
@@ -19,7 +36,6 @@ export async function getAllEvents(tags?: Tags): Promise<Event[]> {
 
     for (let page = 1; page < 50; page++) {
         const eventsFromPage = await getEventsForPage({ ...tags, page })
-
         if (!eventsFromPage.length) break
 
         totalEvents.push(...eventsFromPage)
