@@ -9,12 +9,12 @@ test('buildURI function', () => {
             uri: 'archive/',
         },
         {
-            params: { fromArchive: true, page: 2 },
-            uri: 'archive/2/',
+            params: { fromArchive: true, page: 12 },
+            uri: 'archive/12/',
         },
         {
-            params: { page: 2 },
-            uri: '2/',
+            params: { page: 5 },
+            uri: 'page-5/',
         },
         {
             params: { page: 1 },
