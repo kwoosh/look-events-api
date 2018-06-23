@@ -196,7 +196,7 @@ export function getTags() {
     return loadPage({ fromArchive: true }).then(page => {
         if (page) {
             const places = page(selectors.cities)
-                .map((i, el) => el.children[0].data)
+                .map((_, el) => el.children[0].data)
                 .get()
                 .map(str => {
                     if (str === 'онлайн') str = 'online'
@@ -204,7 +204,7 @@ export function getTags() {
                 })
 
             const topics = page(selectors.topics)
-                .map((i, el) => el.children[0].data)
+                .map((_, el) => el.children[0].data)
                 .get()
 
             return { topics, places }
