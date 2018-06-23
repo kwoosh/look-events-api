@@ -4,7 +4,7 @@ export type Params = {
     fromArchive?: boolean
 }
 
-export const buildURI = ({ page, fromArchive, id }: Params = { fromArchive: false }): string => {
+export function buildURI({ page, fromArchive, id }: Params = { fromArchive: false }): string {
     let url = fromArchive ? 'archive/' : ''
 
     if (page >= 2 && fromArchive) url += `${page}/`

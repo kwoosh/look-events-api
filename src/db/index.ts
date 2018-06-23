@@ -34,14 +34,14 @@ export default class DB {
         console.log(`Database successfuly filed with ${events.length} elements`)
     }
 
-    get(id: number) {
+    get(id: number): Event {
         return this.db
             .get('events')
             .find({ id: Number(id) })
             .value()
     }
 
-    getList(tags?: Tags) {
+    getList(tags?: Tags): Event[] {
         return this.db
             .get('events')
             .value()
