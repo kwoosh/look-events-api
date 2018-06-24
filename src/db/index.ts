@@ -71,4 +71,8 @@ export default class DB {
                 return validEvent
             })
     }
+
+    getCount(): number {
+        return this.db.get('events').value().length
+    }
 }
