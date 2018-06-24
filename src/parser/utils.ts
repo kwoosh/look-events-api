@@ -1,8 +1,9 @@
 import { loadPage } from './load-page'
 
-export const parseDateRegExp = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
+const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
 
-export const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
+export const parseDateRegExp = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
+export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
 
 export const selectors = {
     events: `${mainRoot} > article.b-postcard`,
