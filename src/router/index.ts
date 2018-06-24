@@ -9,7 +9,7 @@ setInterval(() => eventsDB.fill(), REFILL_INTERVAL) // refill Events DB every 3 
 
 router.get('/', async ctx => {
     ctx.body = {
-        Version: '0.5.3',
+        Version: '0.6.0',
         Author: 'Andrew Pashinnik',
         Contact: 'tobirawork@gmail.com',
         Home: 'https://look-events-api.herokuapp.com/',
