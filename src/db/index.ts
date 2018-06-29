@@ -3,6 +3,7 @@ import * as low from 'lowdb'
 import * as FileSync from 'lowdb/adapters/FileSync'
 import { getAllEvents, getEventPictureSrc } from '../parser/events'
 import { Event } from '../parser/events/event'
+import * as moment from 'moment'
 
 export type Tags = { topics: string[]; places: string[] }
 
@@ -19,6 +20,7 @@ export default class DB {
     }
 
     async fill() {
+        const start = moment()
         console.log(`Start fillig Database`)
 
         const events = await getAllEvents()
@@ -31,7 +33,7 @@ export default class DB {
 
         this.db.set('events', events).write()
 
-        console.log(`Database successfuly filed with ${events.length} elements`)
+        console.log(`Database successfuly filed with ${events.length} elements in ${moment().diff(start, 'seconds')} seconds`)
     }
 
     get(id: number): Event {

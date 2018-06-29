@@ -5,7 +5,7 @@ import DB, { Tags } from '../db'
 const router = new Router()
 const eventsDB = new DB()
 
-setInterval(() => eventsDB.fill(), REFILL_INTERVAL) // refill Events DB every 3 hours
+setInterval(() => eventsDB.fill(), REFILL_INTERVAL) // refill Events DB
 
 router.get('/', async ctx => {
     ctx.body = {
