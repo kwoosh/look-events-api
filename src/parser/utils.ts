@@ -1,11 +1,11 @@
-import { loadPage } from './load-page'
+import { loadDOM } from './load-page'
+
+export const PARSE_DATE_REGEX = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
+export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
 
 const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
 
-export const parseDateRegExp = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
-export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
-
-export const selectors = {
+export const SELECTORS = {
     events: `${mainRoot} > article.b-postcard`,
     cities: `${mainRoot} > div.page-head > h1 > select:nth-child(2) > option`,
     topics: `${mainRoot} > div.page-head > h1 > select:nth-child(3) > option`,
@@ -194,19 +194,20 @@ export const defaultTags = {
 }
 
 export function getTags() {
-    return loadPage({ fromArchive: true }).then(page => {
-        if (page) {
-            const places = page(selectors.cities)
-                .map((_, el) => el.children[0].data)
-                .get()
-                .map(str => {
-                    if (str === 'онлайн') str = 'online'
-                    return str
-                })
+    return loadDOM().then(dom => {
+        if (dom) {
+            const places: string[] = []
+            const topics: string[] = []
 
-            const topics = page(selectors.topics)
-                .map((_, el) => el.children[0].data)
-                .get()
+            dom.window.document.querySelectorAll(SELECTORS.cities).forEach(elem => {
+                let place = elem.textContent
+                if (place === 'онлайн') place = 'online'
+                places.push(place)
+            })
+
+            dom.window.document.querySelectorAll(SELECTORS.topics).forEach(elem => {
+                topics.push(elem.textContent)
+            })
 
             return { topics, places }
         }

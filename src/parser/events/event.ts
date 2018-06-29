@@ -9,18 +9,18 @@ export type Event = {
     link: string
     place: string
     price: string
-    time: string[]
     topics: string[]
+    time: { dates: string[]; raw: string }
 }
 
-export const formatEvent = (rawElem: Cheerio): Event => ({
-    id: filters.id(rawElem),
-    title: filters.title(rawElem),
-    price: filters.price(rawElem),
-    place: filters.place(rawElem),
-    description: filters.description(rawElem),
-    link: buildURI({ id: filters.id(rawElem) }),
+export const formatEvent = (raw: Element): Event => ({
+    id: filters.id(raw),
+    title: filters.title(raw),
+    price: filters.price(raw),
+    time: filters.time(raw),
+    place: filters.place(raw),
+    description: filters.description(raw),
+    link: buildURI({ id: filters.id(raw) }),
+    topics: filters.topics(raw),
     image: '',
-    time: filters.time(rawElem),
-    topics: filters.topics(rawElem),
 })

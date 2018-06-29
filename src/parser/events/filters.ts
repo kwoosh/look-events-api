@@ -1,70 +1,58 @@
-import * as cheerio from 'cheerio'
 import * as moment from 'moment'
-import { defaultTags, parseDateRegExp } from '../utils'
+import { PARSE_DATE_REGEX } from '../utils'
 
-export function id(elem: Cheerio): number {
+export function id(element: Element): number {
     return Number(
-        elem
-            .children('h2.title')
-            .children('a')
-            .attr('href')
+        element
+            .querySelector('h2.title a')
+            .getAttribute('href')
             .split('/')
             .find(str => !!Number(str))
     )
 }
 
-export function title(elem: Cheerio): string {
-    return elem
-        .children('h2.title')
-        .text()
-        .trim()
+export function title(element: Element): string {
+    return element.querySelector('h2.title a').textContent.trim()
 }
 
-export function description(elem: Cheerio): string {
-    return elem
-        .children('p.b-typo')
-        .text()
-        .trim()
+export function description(element: Element): string {
+    return element.querySelector('p.b-typo').textContent.trim()
 }
 
-export function topics(elem: Cheerio): string[] {
-    return elem
-        .children('div.more')
-        .find('a')
-        .map((_, a) => cheerio(a).text())
-        .get()
+export function topics(element: Element): string[] {
+    const topics: string[] = []
+
+    element.querySelectorAll('div.more a').forEach(e => {
+        topics.push(e.textContent)
+    })
+
+    return topics
 }
 
-export function price(elem: Cheerio): string {
-    return elem
-        .children('div.when-and-where')
-        .find('span')
-        .not('.date')
-        .text()
-        .trim()
+export function price(element: Element): string {
+    const el = element.querySelector('div.when-and-where')
+
+    return el.removeChild(el.lastElementChild).textContent.trim()
 }
 
-export function place(elem: Cheerio): string {
-    return elem
-        .children('div.when-and-where')
-        .text()
-        .match(/[a-zA-Zа-яА-Я]+/g)
-        .find(str => defaultTags.places.map(place => place.toLowerCase()).includes(str.toLowerCase()))
+export function place(element: Element): string {
+    const el = element.querySelector('div.when-and-where')
+    el.removeChild(el.firstElementChild)
+
+    return el.textContent.trim()
 }
 
-export function time(elem: Cheerio): string[] {
-    const rawDates = elem
-        .children('div.when-and-where')
-        .find('span.date')
-        .text()
-        .trim()
-        .match(parseDateRegExp)
-        .map(str => str.trim())
+export function time(element: Element): { dates: string[]; raw: string } {
+    const rawDate = element.querySelector('div.when-and-where span.date').textContent
 
-    if (Number(rawDates[0])) {
-        const month = rawDates[1].split(' ')[1]
-        rawDates[0] = `${rawDates[0]} ${month}`
+    const matched = rawDate.match(PARSE_DATE_REGEX).map(str => str.trim())
+
+    if (Number(matched[0])) {
+        const month = matched[1].split(' ')[1]
+        matched[0] = `${matched[0]} ${month}`
     }
 
-    return rawDates.map(str => moment(str, 'DD MMM YYYY', 'ru').toISOString())
+    const dates = matched.map(str => moment(str, 'DD MMM YYYY', 'ru').toISOString())
+
+    return { raw: rawDate, dates }
 }
