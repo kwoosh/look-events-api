@@ -30,7 +30,10 @@ router.get('/events/count', async ctx => {
 })
 
 router.get('/events/:id', async ctx => {
-    ctx.body = eventsDB.get(ctx.params.id)
+    const event = eventsDB.get(ctx.params.id)
+    if (!event) ctx.throw(404)
+
+    ctx.body = event
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
