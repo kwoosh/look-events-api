@@ -1,26 +1,31 @@
-import * as path from 'path'
 import * as low from 'lowdb'
 import * as FileSync from 'lowdb/adapters/FileSync'
+import * as moment from 'moment'
+import * as path from 'path'
 import { getAllEvents, getEventPictureSrc } from '../parser/events'
 import { Event } from '../parser/events/event'
-import * as moment from 'moment'
+import { getTags } from '../parser/utils'
 
-export type Tags = { topics: string[]; places: string[] }
+export type Tags = {
+    topics: string[]
+    places: string[]
+}
 
 export default class DB {
-    db: low.LowdbSync<{ events: Event[] }>
+    db: low.LowdbSync<{ events: Event[]; tags: Tags }>
 
     constructor() {
         const events: Event[] = []
+        const tags: Tags = { topics: [], places: [] }
 
         this.db = low(new FileSync(path.join(__dirname, '/db.json')))
-        this.db.defaults({ events }).write()
+        this.db.defaults({ events, tags }).write()
 
         if (process.env.NODE_ENV !== 'development') this.fill()
     }
 
     async fill() {
-        const start = moment()
+        const startTime = moment()
         console.log(`Start fillig Database`)
 
         const events = await getAllEvents()
@@ -30,10 +35,12 @@ export default class DB {
                 return ''
             })
         }
-
         this.db.set('events', events).write()
 
-        console.log(`Database successfuly filed with ${events.length} elements in ${moment().diff(start, 'seconds')} seconds`)
+        const tags = await getTags()
+        this.db.set('tags', tags).write()
+
+        console.log(`Database successfuly filed with ${events.length} elements in ${moment().diff(startTime, 'seconds')} seconds`)
     }
 
     get(id: number): Event {
@@ -80,5 +87,9 @@ export default class DB {
 
     getCount(): number {
         return this.db.get('events').value().length
+    }
+
+    getTags(): Tags {
+        return this.db.get('tags').value()
     }
 }

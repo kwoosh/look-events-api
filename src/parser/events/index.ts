@@ -1,6 +1,6 @@
+import { loadDOM } from '../load-dom'
 import { Params } from '../uri-builder'
 import { SELECTORS } from '../utils'
-import { loadDOM } from '../load-page'
 import { Event, formatEvent } from './event'
 
 export function getEventPictureSrc(id: number) {

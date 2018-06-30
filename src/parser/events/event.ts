@@ -1,5 +1,5 @@
-import * as filters from './filters'
 import { buildURI } from '../uri-builder'
+import * as filters from './filters'
 
 export type Event = {
     id: number

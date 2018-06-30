@@ -1,6 +1,6 @@
 import * as Router from 'koa-router'
-import { defaultTags, REFILL_INTERVAL } from '../parser/utils'
 import DB, { Tags } from '../db'
+import { REFILL_INTERVAL } from '../parser/utils'
 
 const router = new Router()
 const eventsDB = new DB()
@@ -37,13 +37,13 @@ router.get('/events/:id', async ctx => {
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
-router.get('/tag/topics', async ctx => {
-    ctx.body = defaultTags.topics
+router.get('/tags/topics', async ctx => {
+    ctx.body = eventsDB.getTags().topics
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
-router.get('/tag/places', async ctx => {
-    ctx.body = defaultTags.places
+router.get('/tags/places', async ctx => {
+    ctx.body = eventsDB.getTags().places
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
