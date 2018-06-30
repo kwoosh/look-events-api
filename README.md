@@ -8,10 +8,47 @@ Source: `https://look-events-api.herokuapp.com`
 
 Endpoints:
 
--   Meta info - `/`
--   Event - `/events`
--   Cities - `/tags/cities`
--   Topics - `/tags/topics`
+## Event
+
+-   meta info - `/`
+-   list of events **Event[]** - `/events`
+-   single event **Event** - `/events/:id`
+-   places **string[]** - `/tags/places`
+-   topics **string[]** - `/tags/places`
+
+```ts
+type Event = {
+    id: number
+    title: string
+    description: string
+    image: string
+    link: string
+    price: string
+    places: string[]
+    topics: string[]
+    time: { dates: string[]; raw: string }
+}
+```
+
+## Example of Event
+
+```json
+{
+    "id": 20317,
+    "title": "Data Science & Engineering Fest",
+    "time": {
+        "raw": "2 февраля 2019",
+        "dates": ["2019-02-01T22:00:00.000Z"]
+    },
+    "price": "от 110 USD",
+    "places": ["Киев"],
+    "description":
+        "Будущее за данными. Однако наука о данных только начинает по-настоящему набирать обороты. Мы стремительно приближаемся к новой эпохе беспилотных автомобилей, голографических личных помощников и умных роботов. Мир вокруг нас претерпевает фундаментальные изменения, трансформируя все процессы нашей жизни.",
+    "link": "https://dou.ua/calendar/20317/",
+    "topics": ["AI", "Data Science", "конференция"],
+    "image": "https://s.dou.ua/CACHE/images/img/events/DATA_fest_logo_RGB/41bd00fde4f9c738c997ffedd6495674.png"
+}
+```
 
 ## Contibution
 
@@ -24,12 +61,12 @@ NPM Scripts:
 
 Commit messages should follow the Semantic Commit Messages format:
 
-```
+````
 label(namespace): title
 
 description
-```
 
+```
 1.  _label_ is one of the following:
     -   `fix` - bug fixes.
     -   `feat` - features.
@@ -42,9 +79,13 @@ description
 4.  _description_ is **optional**, new-line separated from title and is in present tense.
 
 Example:
-
 ```
+
 fix(Page): fix page.pizza method
 
 This patch fixes page.pizza so that it works with iframes. Fixes #123, Fixes #234
+
 ```
+
+```
+````

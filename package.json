@@ -1,6 +1,6 @@
 {
   "name": "look-events-api",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "IT events API powered by DOU.ua",
   "license": "MIT",
   "author": "Andrew Pashinnik <tobirawork@gmail.com>",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "cheerio": "^1.0.0-rc.2",
+    "jsdom": "^11.11.0",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.0",
@@ -26,8 +26,8 @@
     "moment": "^2.22.2"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.7",
     "@types/jest": "^23.1.0",
+    "@types/jsdom": "^11.0.6",
     "@types/koa": "^2.0.46",
     "@types/koa-bodyparser": "^4.2.0",
     "@types/koa-logger": "^3.1.0",

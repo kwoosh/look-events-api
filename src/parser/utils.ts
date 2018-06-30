@@ -1,11 +1,13 @@
-import { loadPage } from './load-page'
+import { Tags } from '../db'
+import { loadDOM } from './load-dom'
+
+export const PARSE_DATE_REGEX = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
+export const PARSE_PLACE_REGEX = /[а-яА-Яa-zA-Z\-]+/gi
+export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
 
 const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
 
-export const parseDateRegExp = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
-export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
-
-export const selectors = {
+export const SELECTORS = {
     events: `${mainRoot} > article.b-postcard`,
     cities: `${mainRoot} > div.page-head > h1 > select:nth-child(2) > option`,
     topics: `${mainRoot} > div.page-head > h1 > select:nth-child(3) > option`,
@@ -13,202 +15,37 @@ export const selectors = {
         'body > div.g-page > div.l-content.m-content > div.l-content-wrap > div.cell.g-right-shadowed.mobtab-maincol > div.event-info > img',
 }
 
-export const defaultTags = {
-    topics: [
-        '.NET',
-        '1C',
-        '3D',
-        'Agile',
-        'AI',
-        'Algorithms',
-        'Android',
-        'APL',
-        'BA',
-        'big data',
-        'Blockchain',
-        'C',
-        'C++',
-        'Clojure',
-        'cloud',
-        'Data Science',
-        'Database',
-        'DevOps',
-        'Erlang',
-        'F#',
-        'Flash',
-        'Front-end',
-        'gamedev',
-        'Go',
-        'golang',
-        'Groovy',
-        'hardware',
-        'Haskell',
-        'highload',
-        'HR',
-        'iOS',
-        'IoT',
-        'Java',
-        'JavaScript',
-        'Kotlin',
-        'Linux',
-        'Lisp',
-        'Lua',
-        'Microsoft',
-        'ML',
-        'mobile',
-        'Perl',
-        'PHP',
-        'PM',
-        'Python',
-        'QA',
-        'R',
-        'Ruby',
-        'Rust',
-        'SaaS',
-        'Sales',
-        'Scala',
-        'Scrum',
-        'VR',
-        'английский',
-        'безопасность',
-        'бизнес',
-        'благотворительность',
-        'вебинар',
-        'вечеринка',
-        'вечерника',
-        'дайджест',
-        'дизайн',
-        'карьера',
-        'клубные встречи',
-        'конкурс',
-        'конференция',
-        'курсы',
-        'маркетинг',
-        'менеджмент',
-        'семинар',
-        'сертификация',
-        'соревнование',
-        'соревнования',
-        'стартап',
-        'тестирование',
-        'технологии',
-        'ФП',
-        'фриланс',
-        'хакатон',
-    ],
-    places: [
-        'Алушта',
-        'Амстердам',
-        'Анахейм',
-        'Атланта',
-        'Афины',
-        'Белая Церковь',
-        'Берлин',
-        'Бостон',
-        'Братислава',
-        'Брно',
-        'Брюссель',
-        'Будапешт',
-        'Бухарест',
-        'Варшава',
-        'Вена',
-        'Вильнюс',
-        'Винница',
-        'Вроцлав',
-        'Гданьск',
-        'Гродно',
-        'Днепр',
-        'Донецк',
-        'Дорнбирн',
-        'Екатеринбург',
-        'Житомир',
-        'Запорожье',
-        'Ивано-Франковск',
-        'Ирпень',
-        'Казань',
-        'Киев',
-        'Копенгаген',
-        'Краков',
-        'Краматорск',
-        'Кременчуг',
-        'Кривой Рог',
-        'Кропивницкий',
-        'Курортное',
-        'Лондон',
-        'Луганск',
-        'Луцк',
-        'Львов',
-        'Мариуполь',
-        'Мелитополь',
-        'Минск',
-        'Москва',
-        'Мюнхен',
-        'Николаев',
-        'Новосибирск',
-        'Нью-Йорк',
-        'Одесса',
-        'Оксфорд',
-        'Орхус',
-        'Осло',
-        'Остин',
-        'Париж',
-        'Познань',
-        'Полтава',
-        'Прага',
-        'Рига',
-        'Ровно',
-        'Самара',
-        'Сан-Франциско',
-        'Санкт-Петербург',
-        'Санта-Клара',
-        'Севастополь',
-        'Северодонецк',
-        'Симферополь',
-        'Сиэтл',
-        'Сиэттл',
-        'Солигорск',
-        'София',
-        'Сплит',
-        'Спокан',
-        'Стамбул',
-        'Стокгольм',
-        'Сумы',
-        'Таллинн',
-        'Тель-Авив',
-        'Тернополь',
-        'Турку',
-        'Ужгород',
-        'Флоренция',
-        'Харьков',
-        'Хельсинки',
-        'Херсон',
-        'Хмельницкий',
-        'Челябинск',
-        'Черкассы',
-        'Чернигов',
-        'Черновцы',
-        'Чешке-Будейовице',
-        'Шацк',
-        'online',
-    ],
+export function unique(arr: string[]) {
+    return arr.filter((v, i, a) => a.indexOf(v) === i)
 }
 
-export function getTags() {
-    return loadPage({ fromArchive: true }).then(page => {
-        if (page) {
-            const places = page(selectors.cities)
-                .map((_, el) => el.children[0].data)
-                .get()
-                .map(str => {
-                    if (str === 'онлайн') str = 'online'
-                    return str
-                })
+function loadTags(fromArchive: boolean = false) {
+    return loadDOM({ fromArchive }).then(dom => {
+        if (dom) {
+            const places: string[] = []
+            const topics: string[] = []
 
-            const topics = page(selectors.topics)
-                .map((_, el) => el.children[0].data)
-                .get()
+            dom.window.document.querySelectorAll(SELECTORS.cities).forEach(elem => {
+                let place = elem.textContent
+                if (place === 'онлайн') place = 'Online'
+                places.push(place)
+            })
+
+            dom.window.document.querySelectorAll(SELECTORS.topics).forEach(elem => {
+                topics.push(elem.textContent)
+            })
 
             return { topics, places }
         }
     })
+}
+
+export async function getTags(): Promise<Tags> {
+    const archiveTags = await loadTags(true)
+    const calendarTags = await loadTags(false)
+
+    return {
+        topics: unique([...archiveTags.topics, ...calendarTags.topics]),
+        places: unique([...archiveTags.places, ...calendarTags.places]),
+    }
 }
