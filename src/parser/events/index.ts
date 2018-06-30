@@ -15,7 +15,8 @@ export function getEventsForPage(params?: Params): Promise<Event[]> {
 
         if (dom)
             dom.window.document.querySelectorAll(SELECTORS.events).forEach(elem => {
-                events.push(formatEvent(elem))
+                const event = formatEvent(elem)
+                events.push(event)
             })
 
         return events

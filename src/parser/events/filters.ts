@@ -31,8 +31,8 @@ export function topics(element: Element): string[] {
 
 export function price(element: Element): string {
     const el = element.querySelector('div.when-and-where')
-
-    return el.lastElementChild.textContent.trim()
+    if (el.children.length > 1) return el.lastElementChild.textContent.trim()
+    return ''
 }
 
 export function places(element: Element): string[] {
