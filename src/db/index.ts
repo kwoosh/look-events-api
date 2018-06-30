@@ -60,11 +60,15 @@ export default class DB {
                 let hasTopic = false
                 let hasCity = false
 
-                topics.forEach(topic => {
-                    if (event.topics.includes(topic)) hasTopic = true
+                topics.forEach(t => {
+                    const eventTopics = event.topics.map(t => t.toLowerCase())
+                    if (eventTopics.includes(t.toLowerCase())) hasTopic = true
                 })
 
-                if (places.includes(event.place)) hasCity = true
+                places.forEach(p => {
+                    const eventPlaces = event.places.map(p => p.toLowerCase())
+                    if (eventPlaces.includes(p.toLowerCase())) hasCity = true
+                })
 
                 if (topics.length && !places.length) validEvent = hasTopic
                 if (!topics.length && places.length) validEvent = hasCity
