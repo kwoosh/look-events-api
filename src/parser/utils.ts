@@ -1,6 +1,7 @@
 import { loadDOM } from './load-page'
 
 export const PARSE_DATE_REGEX = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
+export const PARSE_PLACE_REGEX = /[а-яА-Яa-zA-Z\-]+/gi
 export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
 
 const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'

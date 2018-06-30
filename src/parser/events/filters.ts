@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { PARSE_DATE_REGEX } from '../utils'
+import { PARSE_DATE_REGEX, PARSE_PLACE_REGEX } from '../utils'
 
 export function id(element: Element): number {
     return Number(
@@ -32,14 +32,16 @@ export function topics(element: Element): string[] {
 export function price(element: Element): string {
     const el = element.querySelector('div.when-and-where')
 
-    return el.removeChild(el.lastElementChild).textContent.trim()
+    return el.lastElementChild.textContent.trim()
 }
 
-export function place(element: Element): string {
+export function places(element: Element): string[] {
     const el = element.querySelector('div.when-and-where')
-    el.removeChild(el.firstElementChild)
 
-    return el.textContent.trim()
+    el.removeChild(el.querySelector('span.date'))
+    if (el.children.length) el.removeChild(el.querySelector('span'))
+
+    return el.textContent.trim().match(PARSE_PLACE_REGEX)
 }
 
 export function time(element: Element): { dates: string[]; raw: string } {
