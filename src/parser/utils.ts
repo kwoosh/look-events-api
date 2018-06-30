@@ -1,5 +1,5 @@
-import { loadDOM } from './load-dom'
 import { Tags } from '../db'
+import { loadDOM } from './load-dom'
 
 export const PARSE_DATE_REGEX = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
 export const PARSE_PLACE_REGEX = /[а-яА-Яa-zA-Z\-]+/gi
