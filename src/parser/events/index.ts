@@ -1,33 +1,33 @@
-import * as cheerio from 'cheerio'
 import { Params } from '../uri-builder'
-import { selectors } from '../utils'
-import { loadPage } from '../load-page'
+import { SELECTORS } from '../utils'
+import { loadDOM } from '../load-page'
 import { Event, formatEvent } from './event'
 
 export function getEventPictureSrc(id: number) {
-    return loadPage({ id }).then(page => {
-        if (page) return page(selectors.singleEventPicture).attr('src')
+    return loadDOM({ id }).then(dom => {
+        if (dom) return dom.window.document.querySelector(SELECTORS.singleEventPicture).getAttribute('src')
     })
 }
 
 export function getEventsForPage(params?: Params): Promise<Event[]> {
-    return loadPage(params).then(async page => {
+    return loadDOM(params).then(async dom => {
         const events: Event[] = []
 
-        if (page)
-            page(selectors.events).map((_, element) => {
-                events.push(formatEvent(cheerio(element)))
+        if (dom)
+            dom.window.document.querySelectorAll(SELECTORS.events).forEach(elem => {
+                const event = formatEvent(elem)
+                events.push(event)
             })
 
         return events
     })
 }
 
-export async function getAllEvents(params?: Params): Promise<Event[]> {
+export async function getAllEvents(): Promise<Event[]> {
     const totalEvents: Event[] = []
 
     for (let page = 1; page < 50; page++) {
-        const eventsFromPage = await getEventsForPage({ ...params, page })
+        const eventsFromPage = await getEventsForPage({ page })
         if (!eventsFromPage.length) break
 
         totalEvents.push(...eventsFromPage)
