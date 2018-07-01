@@ -1,5 +1,6 @@
 import * as Router from 'koa-router'
-import DB, { Tags } from '../db'
+import DB from '../db'
+import { Tags } from '../parser/tags'
 import { REFILL_INTERVAL } from '../parser/utils'
 
 const router = new Router()

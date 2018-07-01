@@ -1,6 +1,10 @@
-import { Tags } from '../db'
 import { loadDOM } from './load-dom'
 import { SELECTORS, unique } from './utils'
+
+export type Tags = {
+    topics: string[]
+    places: string[]
+}
 
 function loadTags({ fromArchive }: { fromArchive: boolean }) {
     return loadDOM({ fromArchive }).then(dom => {
