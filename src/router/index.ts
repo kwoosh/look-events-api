@@ -30,7 +30,7 @@ router.get('/events/count', async ctx => {
 })
 
 router.get('/events/:id', async ctx => {
-    const event = eventsDB.get(ctx.params.id)
+    const event = eventsDB.getEvent(ctx.params.id)
     if (!event) ctx.throw(404)
 
     ctx.body = event

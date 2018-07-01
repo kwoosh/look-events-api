@@ -3,13 +3,13 @@ import { Params } from '../uri-builder'
 import { SELECTORS } from '../utils'
 import { Event, formatEvent } from './event'
 
-export function getEventPictureSrc(id: number) {
+export function parseEventImage(id: number) {
     return loadDOM({ id }).then(dom => {
         if (dom) return dom.window.document.querySelector(SELECTORS.singleEventPicture).getAttribute('src')
     })
 }
 
-export function getEventsForPage(params?: Params): Promise<Event[]> {
+export function parseEventsFromPage(params?: Params): Promise<Event[]> {
     return loadDOM(params).then(async dom => {
         const events: Event[] = []
 
@@ -23,11 +23,11 @@ export function getEventsForPage(params?: Params): Promise<Event[]> {
     })
 }
 
-export async function getAllEvents(): Promise<Event[]> {
+export async function parseAllEvents(): Promise<Event[]> {
     const totalEvents: Event[] = []
 
     for (let page = 1; page < 50; page++) {
-        const eventsFromPage = await getEventsForPage({ page })
+        const eventsFromPage = await parseEventsFromPage({ page })
         if (!eventsFromPage.length) break
 
         totalEvents.push(...eventsFromPage)
