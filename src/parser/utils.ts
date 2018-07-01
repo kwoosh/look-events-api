@@ -1,8 +1,6 @@
-import { Tags } from '../db'
-import { loadDOM } from './load-dom'
-
 export const PARSE_DATE_REGEX = /(\d){1,2}\s([а-я]+)?(\s)?((\d){4})?/gi
 export const PARSE_PLACE_REGEX = /[а-яА-Яa-zA-Z\-]+/gi
+
 export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
 
 const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
@@ -17,35 +15,4 @@ export const SELECTORS = {
 
 export function unique(arr: string[]) {
     return arr.filter((v, i, a) => a.indexOf(v) === i)
-}
-
-function loadTags(fromArchive: boolean = false) {
-    return loadDOM({ fromArchive }).then(dom => {
-        if (dom) {
-            const places: string[] = []
-            const topics: string[] = []
-
-            dom.window.document.querySelectorAll(SELECTORS.cities).forEach(elem => {
-                let place = elem.textContent
-                if (place === 'онлайн') place = 'Online'
-                places.push(place)
-            })
-
-            dom.window.document.querySelectorAll(SELECTORS.topics).forEach(elem => {
-                topics.push(elem.textContent)
-            })
-
-            return { topics, places }
-        }
-    })
-}
-
-export async function getTags(): Promise<Tags> {
-    const archiveTags = await loadTags(true)
-    const calendarTags = await loadTags(false)
-
-    return {
-        topics: unique([...archiveTags.topics, ...calendarTags.topics]),
-        places: unique([...archiveTags.places, ...calendarTags.places]),
-    }
 }

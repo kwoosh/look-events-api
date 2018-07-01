@@ -2,9 +2,9 @@ import * as low from 'lowdb'
 import * as FileSync from 'lowdb/adapters/FileSync'
 import * as moment from 'moment'
 import * as path from 'path'
-import { getAllEvents, getEventPictureSrc } from '../parser/events'
+import { parseAllEvents, parseEventImage } from '../parser/events'
 import { Event } from '../parser/events/event'
-import { getTags } from '../parser/utils'
+import { parseTags } from '../parser/parse-tags'
 
 export type Tags = {
     topics: string[]
@@ -28,22 +28,24 @@ export default class DB {
         const startTime = moment()
         console.log(`Start fillig Database`)
 
-        const events = await getAllEvents()
+        const events = await parseAllEvents()
         for (let event of events) {
-            event.image = await getEventPictureSrc(event.id).catch(err => {
+            const image = await parseEventImage(event.id).catch(err => {
                 console.error(err)
                 return ''
             })
+            event.image = image
         }
         this.db.set('events', events).write()
 
-        const tags = await getTags()
+        const tags = await parseTags()
         this.db.set('tags', tags).write()
 
-        console.log(`Database successfuly filed with ${events.length} elements in ${moment().diff(startTime, 'seconds')} seconds`)
+        const seconds = moment().diff(startTime, 'seconds')
+        console.log(`Database successfuly filed with ${events.length} elements in ${seconds} seconds`)
     }
 
-    get(id: number): Event {
+    getEvent(id: number): Event {
         return this.db
             .get('events')
             .find({ id: Number(id) })
@@ -80,6 +82,7 @@ export default class DB {
                 if (topics.length && !places.length) validEvent = hasTopic
                 if (!topics.length && places.length) validEvent = hasCity
                 if (topics.length && places.length) validEvent = hasCity && hasTopic
+                if (!topics.length && !places.length) validEvent = true
 
                 return validEvent
             })
