@@ -4,12 +4,7 @@ import * as moment from 'moment'
 import * as path from 'path'
 import { parseAllEvents, parseEventImage } from '../parser/events'
 import { Event } from '../parser/events/event'
-import { parseTags } from '../parser/parse-tags'
-
-export type Tags = {
-    topics: string[]
-    places: string[]
-}
+import { parseTags, Tags } from '../parser/tags'
 
 export default class DB {
     db: low.LowdbSync<{ events: Event[]; tags: Tags }>
