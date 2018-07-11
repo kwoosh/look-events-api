@@ -29,8 +29,6 @@ router.get('/events', async ctx => {
         offset: offset || 0,
     }
 
-    console.log(options)
-
     ctx.body = eventsDB.getList(tags, options)
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
