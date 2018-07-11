@@ -10,7 +10,7 @@ setInterval(() => eventsDB.fill(), REFILL_INTERVAL) // refill Events DB
 
 router.get('/', async ctx => {
     ctx.body = {
-        version: '0.7.2',
+        version: '0.8.0',
         author: 'Andrew Pashinnik',
         contact: 'tobirawork@gmail.com',
         home: 'https://look-events-api.herokuapp.com/',
@@ -21,7 +21,15 @@ router.get('/', async ctx => {
 router.get('/events', async ctx => {
     const tags: Tags = typeof ctx.query.tags === 'string' ? JSON.parse(ctx.query.tags) : ctx.query.tags
 
-    ctx.body = eventsDB.getList(tags)
+    const limit = Number(ctx.query.limit)
+    const offset = Number(ctx.query.offset)
+
+    const options = {
+        limit: limit || limit === 0 ? limit : 10000,
+        offset: offset || 0,
+    }
+
+    ctx.body = eventsDB.getList(tags, options)
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 

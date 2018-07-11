@@ -6,6 +6,15 @@ import { parseAllEvents, parseEventImage } from '../parser/events'
 import { Event } from '../parser/events/event'
 import { parseTags, Tags } from '../parser/tags'
 
+export type ListOptions = {
+    limit: number
+    offset: number
+}
+
+export function rangeList<T>(arr: T[], limit: number = 0, offset: number = 0) {
+    return arr.slice(offset, offset + limit)
+}
+
 export default class DB {
     db: low.LowdbSync<{ events: Event[]; tags: Tags }>
 
@@ -47,8 +56,8 @@ export default class DB {
             .value()
     }
 
-    getList(tags?: Tags): Event[] {
-        return this.db
+    getList(tags: Tags, options: ListOptions): Event[] {
+        const list = this.db
             .get('events')
             .value()
             .filter(event => {
@@ -81,6 +90,8 @@ export default class DB {
 
                 return validEvent
             })
+
+        return rangeList<Event>(list, options.limit, options.offset)
     }
 
     getCount(): number {

@@ -9,7 +9,7 @@ app.use(logger())
 app.use(bodyParser())
 app.use(router.routes())
 
-app.use((ctx, next) => {
+app.use(ctx => {
     ctx.throw(404)
 })
 
