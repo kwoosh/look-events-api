@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { PARSE_DATE_REGEX, PARSE_PLACE_REGEX } from '../utils'
+import { PARSE_REGEXPS } from '../utils'
 
 export function id(element: Element): number {
     return Number(
@@ -41,13 +41,13 @@ export function places(element: Element): string[] {
     el.removeChild(el.querySelector('span.date'))
     if (el.children.length) el.removeChild(el.querySelector('span'))
 
-    return el.textContent.trim().match(PARSE_PLACE_REGEX)
+    return el.textContent.trim().match(PARSE_REGEXPS.place)
 }
 
 export function time(element: Element): { dates: string[]; raw: string } {
     const rawDate = element.querySelector('div.when-and-where span.date').textContent
 
-    const matched = rawDate.match(PARSE_DATE_REGEX).map(str => str.trim())
+    const matched = rawDate.match(PARSE_REGEXPS.date).map(str => str.trim())
 
     if (Number(matched[0])) {
         const month = matched[1].split(' ')[1]
