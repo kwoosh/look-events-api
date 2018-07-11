@@ -5,6 +5,12 @@ import * as path from 'path'
 import { parseAllEvents, parseEventImage } from '../parser/events'
 import { Event } from '../parser/events/event'
 import { parseTags, Tags } from '../parser/tags'
+import { rangeArray } from './rangeArray'
+
+type Options = {
+    limit: number
+    offset: number
+}
 
 export default class DB {
     db: low.LowdbSync<{ events: Event[]; tags: Tags }>
@@ -47,8 +53,8 @@ export default class DB {
             .value()
     }
 
-    getList(tags?: Tags): Event[] {
-        return this.db
+    getList(tags: Tags, options: Options): Event[] {
+        const list = this.db
             .get('events')
             .value()
             .filter(event => {
@@ -81,6 +87,8 @@ export default class DB {
 
                 return validEvent
             })
+
+        return rangeArray<Event>(list, options.limit, options.offset)
     }
 
     getCount(): number {

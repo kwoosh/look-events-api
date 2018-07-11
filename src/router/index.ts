@@ -21,7 +21,17 @@ router.get('/', async ctx => {
 router.get('/events', async ctx => {
     const tags: Tags = typeof ctx.query.tags === 'string' ? JSON.parse(ctx.query.tags) : ctx.query.tags
 
-    ctx.body = eventsDB.getList(tags)
+    const limit = Number(ctx.query.limit)
+    const offset = Number(ctx.query.offset)
+
+    const options = {
+        limit: limit || limit === 0 ? limit : 10000,
+        offset: offset || 0,
+    }
+
+    console.log(options)
+
+    ctx.body = eventsDB.getList(tags, options)
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
