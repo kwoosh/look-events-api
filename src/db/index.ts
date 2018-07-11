@@ -5,11 +5,14 @@ import * as path from 'path'
 import { parseAllEvents, parseEventImage } from '../parser/events'
 import { Event } from '../parser/events/event'
 import { parseTags, Tags } from '../parser/tags'
-import { rangeArray } from './rangeArray'
 
-type Options = {
+export type ListOptions = {
     limit: number
     offset: number
+}
+
+export function rangeList<T>(arr: T[], limit: number = 0, offset: number = 0) {
+    return arr.slice(offset, offset + limit)
 }
 
 export default class DB {
@@ -53,7 +56,7 @@ export default class DB {
             .value()
     }
 
-    getList(tags: Tags, options: Options): Event[] {
+    getList(tags: Tags, options: ListOptions): Event[] {
         const list = this.db
             .get('events')
             .value()
@@ -88,7 +91,7 @@ export default class DB {
                 return validEvent
             })
 
-        return rangeArray<Event>(list, options.limit, options.offset)
+        return rangeList<Event>(list, options.limit, options.offset)
     }
 
     getCount(): number {
