@@ -1,4 +1,4 @@
-import { buildURI, Params } from '../src/parser/uri-builder'
+import { buildURI, Params } from '../../src/parser/uri-builder'
 
 test('buildURI function', () => {
     const def = 'https://dou.ua/calendar'
