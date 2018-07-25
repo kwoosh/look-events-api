@@ -8,9 +8,7 @@
   "scripts": {
     "dev": "nodemon",
     "start": "ts-node src/app.ts",
-    "test": "jest",
-    "dist": "tsc",
-    "deploy": "npm run test && git push heroku master"
+    "test": "jest"
   },
   "engines": {
     "node": "9.9.0"
