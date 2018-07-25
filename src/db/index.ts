@@ -1,104 +1,141 @@
-import * as low from 'lowdb'
-import * as FileSync from 'lowdb/adapters/FileSync'
 import * as moment from 'moment'
-import * as path from 'path'
-import { parseAllEvents, parseEventImage } from '../parser/events'
+import { connect, connection } from 'mongoose'
+import config from '../config'
+import { parseAllEvents } from '../parser/events'
 import { Event } from '../parser/events/event'
 import { parseTags, Tags } from '../parser/tags'
+import { EventModel, TagsModel } from './models'
 
-export type ListOptions = {
-    limit: number
-    offset: number
-}
+connection.on('error', error => {
+    console.error('Сonnection ERROR:', error)
+})
 
-export function rangeList<T>(arr: T[], limit: number = 0, offset: number = 0) {
-    return arr.slice(offset, offset + limit)
-}
+connection.once('open', () => {
+    console.log('Connected to db (^_^)')
+})
 
-export default class DB {
-    db: low.LowdbSync<{ events: Event[]; tags: Tags }>
-
+class DB {
     constructor() {
-        const events: Event[] = []
-        const tags: Tags = { topics: [], places: [] }
-
-        this.db = low(new FileSync(path.join(__dirname, '/db.json')))
-        this.db.defaults({ events, tags }).write()
+        connect(
+            process.env.DB_URI || config.DB_URI,
+            { useNewUrlParser: true }
+        )
 
         if (process.env.NODE_ENV !== 'development') this.fill()
     }
 
     async fill() {
+        console.log(`Start fillig Database...`)
         const startTime = moment()
-        console.log(`Start fillig Database`)
 
         const events = await parseAllEvents()
-        for (let event of events) {
-            const image = await parseEventImage(event.id).catch(err => {
-                console.error(err)
-                return ''
-            })
-            event.image = image
-        }
-        this.db.set('events', events).write()
+        await this.deleteEvents()
+        await this.insertEvents(events)
 
         const tags = await parseTags()
-        this.db.set('tags', tags).write()
+        await this.deleteTags()
+        await this.insertTags(tags)
 
         const seconds = moment().diff(startTime, 'seconds')
         console.log(`Database successfuly filed with ${events.length} elements in ${seconds} seconds`)
     }
 
-    getEvent(id: number): Event {
-        return this.db
-            .get('events')
-            .find({ id: Number(id) })
-            .value()
+    insertEvents(events: Event[]) {
+        return new Promise((resolve, reject) => {
+            EventModel.insertMany(events)
+                .then(resolve)
+                .catch(reject)
+        })
     }
 
-    getList(tags: Tags, options: ListOptions): Event[] {
-        const list = this.db
-            .get('events')
-            .value()
-            .filter(event => {
-                if (!tags) return true
-
-                let { topics, places } = tags
-
-                if (!topics) topics = []
-                if (!places) places = []
-
-                let validEvent = false
-
-                let hasTopic = false
-                let hasCity = false
-
-                topics.forEach(t => {
-                    const eventTopics = event.topics.map(t => t.toLowerCase())
-                    if (eventTopics.includes(t.toLowerCase())) hasTopic = true
+    getEvent(id: number): Promise<Event> {
+        return new Promise((resolve, reject) => {
+            EventModel.findOne({ id })
+                .then(doc => {
+                    if (doc) {
+                        const event: Event = doc.toJSON({ versionKey: false, minimize: false })
+                        resolve(event)
+                    } else {
+                        reject()
+                    }
                 })
+                .catch(reject)
+        })
+    }
 
-                places.forEach(p => {
-                    const eventPlaces = event.places.map(p => p.toLowerCase())
-                    if (eventPlaces.includes(p.toLowerCase())) hasCity = true
+    getEvents(tags: Tags, limit: number, offset: number): Promise<Event[]> {
+        return new Promise((resolve, reject) => {
+            let eventsQuery = EventModel.find()
+
+            if (tags.places.length) eventsQuery = eventsQuery.where('places').in(tags.places)
+            if (tags.topics.length) eventsQuery = eventsQuery.where('topics').in(tags.topics)
+
+            eventsQuery
+                .then((docs): Event[] => docs.map(doc => doc.toObject()).slice(offset, offset + limit))
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    getEventsCount(): Promise<number> {
+        return new Promise((resolve, reject) => {
+            EventModel.find()
+                .count()
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    deleteEvents(): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            EventModel.remove({})
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    insertTags(tags: Tags): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            TagsModel.insertMany([
+                {
+                    type: 'topics',
+                    list: tags.topics,
+                },
+                {
+                    type: 'places',
+                    list: tags.places,
+                },
+            ])
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    deleteTags(): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            TagsModel.remove({})
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    getTags(): Promise<Tags> {
+        return new Promise((resolve, reject) => {
+            TagsModel.find()
+                .then(docs => {
+                    const findByType = (type: string) => {
+                        const doc = docs.find(doc => doc.toObject().type === type)
+                        if (!doc) return []
+                        return doc.toObject().list
+                    }
+
+                    const tags: Tags = { topics: findByType('topics'), places: findByType('places') }
+                    return tags
                 })
-
-                if (topics.length && !places.length) validEvent = hasTopic
-                if (!topics.length && places.length) validEvent = hasCity
-                if (topics.length && places.length) validEvent = hasCity && hasTopic
-                if (!topics.length && !places.length) validEvent = true
-
-                return validEvent
-            })
-
-        return rangeList<Event>(list, options.limit, options.offset)
-    }
-
-    getCount(): number {
-        return this.db.get('events').value().length
-    }
-
-    getTags(): Tags {
-        return this.db.get('tags').value()
+                .then(resolve)
+                .catch(reject)
+        })
     }
 }
+
+export const db = new DB()

@@ -1,16 +1,15 @@
 import * as Router from 'koa-router'
-import DB from '../db'
-import { Tags } from '../parser/tags'
-import { REFILL_INTERVAL } from '../parser/utils'
+import { db } from './db'
+import { handleQueryStringTags } from './parser/tags'
+import { REFILL_INTERVAL } from './parser/utils'
 
 const router = new Router()
-const eventsDB = new DB()
 
-setInterval(() => eventsDB.fill(), REFILL_INTERVAL) // refill Events DB
+setInterval(() => db.fill(), REFILL_INTERVAL) // refill DB
 
 router.get('/', async ctx => {
     ctx.body = {
-        version: '0.8.0',
+        version: '0.9.0',
         author: 'Andrew Pashinnik',
         contact: 'tobirawork@gmail.com',
         home: 'https://look-events-api.herokuapp.com/',
@@ -19,8 +18,7 @@ router.get('/', async ctx => {
 })
 
 router.get('/events', async ctx => {
-    const tags: Tags = typeof ctx.query.tags === 'string' ? JSON.parse(ctx.query.tags) : ctx.query.tags
-
+    const tags = handleQueryStringTags(ctx.query.tags)
     const limit = Number(ctx.query.limit)
     const offset = Number(ctx.query.offset)
 
@@ -29,17 +27,19 @@ router.get('/events', async ctx => {
         offset: offset || 0,
     }
 
-    ctx.body = eventsDB.getList(tags, options)
+    ctx.body = await db.getEvents(tags, options.limit, options.offset)
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/events/count', async ctx => {
-    ctx.body = { count: eventsDB.getCount() }
+    const count = await db.getEventsCount()
+
+    ctx.body = { count }
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/events/:id', async ctx => {
-    const event = eventsDB.getEvent(ctx.params.id)
+    const event = await db.getEvent(Number(ctx.params.id))
     if (!event) ctx.throw(404)
 
     ctx.body = event
@@ -47,12 +47,16 @@ router.get('/events/:id', async ctx => {
 })
 
 router.get('/tags/topics', async ctx => {
-    ctx.body = eventsDB.getTags().topics
+    const { topics } = await db.getTags()
+
+    ctx.body = topics
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/tags/places', async ctx => {
-    ctx.body = eventsDB.getTags().places
+    const { places } = await db.getTags()
+
+    ctx.body = places
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
