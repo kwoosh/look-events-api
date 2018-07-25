@@ -33,5 +33,14 @@ export async function parseAllEvents(): Promise<Event[]> {
         totalEvents.push(...eventsFromPage)
     }
 
+    for (let event of totalEvents) {
+        const image = await parseEventImage(event.id).catch(err => {
+            console.error(err)
+            return ''
+        })
+
+        event.image = image
+    }
+
     return totalEvents
 }

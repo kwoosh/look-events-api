@@ -36,3 +36,12 @@ export async function parseTags(): Promise<Tags> {
         places: unique([...archiveTags.places, ...calendarTags.places]),
     }
 }
+
+export function handleQueryStringTags(raw: any): Tags {
+    const tags = typeof raw === 'string' ? JSON.parse(raw) : { places: [], topics: [] }
+
+    if (!tags.places) tags.places = []
+    if (!tags.topics) tags.topics = []
+
+    return tags
+}
