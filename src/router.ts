@@ -9,7 +9,7 @@ setInterval(() => db.fill(), REFILL_INTERVAL) // refill DB
 
 router.get('/', async ctx => {
     ctx.body = {
-        version: '0.8.0',
+        version: '0.9.0',
         author: 'Andrew Pashinnik',
         contact: 'tobirawork@gmail.com',
         home: 'https://look-events-api.herokuapp.com/',
