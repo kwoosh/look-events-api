@@ -2,6 +2,7 @@ import * as Koa from 'koa'
 import * as bodyParser from 'koa-bodyparser'
 import * as logger from 'koa-logger'
 import router from './router'
+import config from './config'
 
 const app = new Koa()
 
@@ -15,4 +16,4 @@ app.use(ctx => {
 
 app.listen(process.env.PORT || 3000)
 
-if (process.env.NODE_ENV === 'development') console.log('Server is running on http://localhost:3000')
+if (config.DEV) console.log('Server is running on http://localhost:3000')

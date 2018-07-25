@@ -17,11 +17,16 @@ connection.once('open', () => {
 class DB {
     constructor() {
         connect(
-            process.env.DB_URI || config.DB_URI,
+            process.env.DB_URI || config.LOCAL_DB_URI,
             { useNewUrlParser: true }
         )
 
-        if (process.env.NODE_ENV !== 'development') this.fill()
+        if (config.DEV) this.fill()
+    }
+
+    cleanEvent(event: any): Event {
+        delete event._id
+        return event
     }
 
     async fill() {
@@ -48,15 +53,15 @@ class DB {
         })
     }
 
-    getEvent(id: number): Promise<Event> {
+    getEvent(id: number): Promise<Event | undefined> {
         return new Promise((resolve, reject) => {
             EventModel.findOne({ id })
                 .then(doc => {
                     if (doc) {
                         const event: Event = doc.toJSON({ versionKey: false, minimize: false })
-                        resolve(event)
+                        resolve(this.cleanEvent(event))
                     } else {
-                        reject()
+                        resolve(undefined)
                     }
                 })
                 .catch(reject)
@@ -71,7 +76,9 @@ class DB {
             if (tags.topics.length) eventsQuery = eventsQuery.where('topics').in(tags.topics)
 
             eventsQuery
-                .then((docs): Event[] => docs.map(doc => doc.toObject()).slice(offset, offset + limit))
+                .then((docs): Event[] => docs.map(doc => doc.toObject()))
+                .then(events => events.slice(offset, offset + limit))
+                .then(events => events.map(e => this.cleanEvent(e)))
                 .then(resolve)
                 .catch(reject)
         })
