@@ -3,8 +3,6 @@ export const PARSE_REGEXPS = {
     place: /[а-яА-Яa-zA-Z\-]+/gi,
 }
 
-export const REFILL_INTERVAL = 1000 * 60 * 60 * 3
-
 const mainRoot = 'body > div.g-page > div.l-content.m-content > div > div.col70.m-cola > div > div > div.col50.m-cola'
 
 export const SELECTORS = {

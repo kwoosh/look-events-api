@@ -1,11 +1,13 @@
 import * as Router from 'koa-router'
+import { schedule } from 'node-cron'
 import { db } from './db'
 import { handleQueryStringTags } from './parser/tags'
-import { REFILL_INTERVAL } from './parser/utils'
+
+schedule('* * */3 * * *', () => {
+    db.fill()
+})
 
 const router = new Router()
-
-setInterval(() => db.fill(), REFILL_INTERVAL) // refill DB
 
 router.get('/', async ctx => {
     ctx.body = {
@@ -27,19 +29,19 @@ router.get('/events', async ctx => {
         offset: offset || 0,
     }
 
-    ctx.body = await db.getEvents(tags, options.limit, options.offset)
+    ctx.body = await db.events.getList(tags, options.limit, options.offset)
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/events/count', async ctx => {
-    const count = await db.getEventsCount()
+    const count = await db.events.getCount()
 
     ctx.body = { count }
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/events/:id', async ctx => {
-    const event = await db.getEvent(Number(ctx.params.id))
+    const event = await db.events.get(Number(ctx.params.id))
     if (!event) ctx.throw(404)
 
     ctx.body = event
@@ -47,14 +49,14 @@ router.get('/events/:id', async ctx => {
 })
 
 router.get('/tags/topics', async ctx => {
-    const { topics } = await db.getTags()
+    const { topics } = await db.tags.get()
 
     ctx.body = topics
     ctx.response.set({ 'Content-Type': 'application/json' })
 })
 
 router.get('/tags/places', async ctx => {
-    const { places } = await db.getTags()
+    const { places } = await db.tags.get()
 
     ctx.body = places
     ctx.response.set({ 'Content-Type': 'application/json' })

@@ -1,6 +1,5 @@
 import * as moment from 'moment'
 import { connect, connection } from 'mongoose'
-import config from '../config'
 import { parseAllEvents } from '../parser/events'
 import { parseTags } from '../parser/tags'
 import EventsDB from './events'
@@ -20,7 +19,7 @@ class DB {
 
     constructor() {
         connect(
-            process.env.DB_URI || config.LOCAL_DB_URI,
+            process.env.DB_URI,
             { useNewUrlParser: true }
         )
 
