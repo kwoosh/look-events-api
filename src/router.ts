@@ -11,7 +11,7 @@ const router = new Router()
 
 router.get('/', async ctx => {
     ctx.body = {
-        version: '0.9.1',
+        version: '0.9.2',
         author: 'Andrew Pashinnik',
         contact: 'tobirawork@gmail.com',
         home: 'https://look-events-api.herokuapp.com/',
