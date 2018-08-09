@@ -3,7 +3,7 @@ import { schedule } from 'node-cron'
 import { db } from './db'
 import { handleQueryStringTags } from './parser/tags'
 
-schedule('* * */3 * * *', () => {
+schedule('0 0 */3 * * *', () => {
     db.fill()
 })
 
