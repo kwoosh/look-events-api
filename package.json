@@ -1,6 +1,6 @@
 {
   "name": "look-events-api",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "IT events API powered by DOU.ua",
   "license": "MIT",
   "author": "Andrew Pashinnik <tobirawork@gmail.com>",
