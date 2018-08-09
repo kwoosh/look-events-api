@@ -3,7 +3,7 @@ import { schedule } from 'node-cron'
 import { db } from './db'
 import { handleQueryStringTags } from './parser/tags'
 
-schedule('* * */3 * * *', () => {
+schedule('0 0 */3 * * *', () => {
     db.fill()
 })
 
@@ -11,7 +11,7 @@ const router = new Router()
 
 router.get('/', async ctx => {
     ctx.body = {
-        version: '0.9.2',
+        version: '0.9.3',
         author: 'Andrew Pashinnik',
         contact: 'tobirawork@gmail.com',
         home: 'https://look-events-api.herokuapp.com/',
