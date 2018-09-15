@@ -4,7 +4,7 @@ IT events API powered by DOU.ua
 
 ## API
 
-Source: `https://look-events-api.herokuapp.com`
+Source: [https://look-events-api.herokuapp.com](https://look-events-api.herokuapp.com)
 
 ## Endpoints
 
